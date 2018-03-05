@@ -3,23 +3,31 @@
 
 build: off
 
+# Do not build feature branch with open Pull Requests
+skip_branch_with_pr: true
+
+init:
+  - git config --global core.autocrlf input
+  - git config --global core.longpaths true
+
+# Skipping commits affecting specific files (GitHub only). More details here: /docs/appveyor-yml
+skip_commits:
+ files:
+   - docs/*
+   - '**/*.html'
+   - '**/*.rst'
+   - HISTORY.txt
+
 environment:
 
   # Create expected SHELL variable for pipenv.
   SHELL: "windows"
+  PYPI_VENDOR_DIR: "%cd%\\tests\\pypi\\"
 
   matrix:
 
     - PYTHON: "C:\\Python27-x64"
       PYTHON_VERSION: "2.7.x"
-      PYTHON_ARCH: "64"
-
-    - PYTHON: "C:\\Python34-x64"
-      PYTHON_VERSION: "3.4.x"
-      PYTHON_ARCH: "64"
-
-    - PYTHON: "C:\\Python35-x64"
-      PYTHON_VERSION: "3.5.x"
       PYTHON_ARCH: "64"
 
     - PYTHON: "C:\\Python36-x64"
@@ -48,4 +56,13 @@ install:
   - "pipenv install --system --dev --skip-lock"
 
 test_script:
-  - "pipenv run pytest -n 8 tests/test_pipenv.py tests/test_project.py tests/test_utils.py"
+  - "pipenv run pytest -n 8 -m cli"
+  - "pipenv run pytest -n 8 -m dotvenv"
+  - "pipenv run pytest -n 8 -m check"
+  - "pipenv run pytest -n 8 -m unused"
+  - "pipenv run pytest -n 8 -m requirements"
+  - "pipenv run pytest -n 8 -m complex"
+  - "pipenv run pytest -n 8 -m run"
+  - "pipenv run pytest -n 8 -m project"
+  - "pipenv run pytest -n 8 -m utils"
+  - "pipenv run pytest -n 8 -m takes-forever"
