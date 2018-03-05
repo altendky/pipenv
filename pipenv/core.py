@@ -355,7 +355,7 @@ def ensure_pipfile(validate=True, skip_requirements=False):
 
 def find_a_system_python(python):
     """Finds a system python, given a version (e.g. 2 / 2.7 / 3.6.2), or a full path."""
-    if python.startswith('py'):
+    if python.startswith(('py', 'jy')):
         return system_which(python)
     elif os.path.isabs(python):
         return python
